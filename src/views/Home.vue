@@ -1,18 +1,41 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div>
+    <v-card>
+      <v-card-title class="headline font-weight-regular black white--text">
+        <span style="font-size:32px">
+          <b>Home</b>
+        </span>
+      </v-card-title>
+      <v-card-text>
+        <v-layout row wrap align-center>
+          <v-flex xs12 md12 lg12>
+            <br>
+            <MultifileInput filetype=".c" label="Select source code files" v-model="filelist"/>
+          </v-flex>
+        </v-layout>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
+import MultifileInput from "@/components/MultifileInput"
 export default {
-  name: "home",
+  name: 'Home',
   components: {
-    HelloWorld
+    MultifileInput
+  },
+  data:function(){
+    return{
+      filelist:[]
+    }
+  },
+  watch:{
+    filelist: function(){
+      /* eslint-disable no-console */
+      console.log(this.filelist);
+      /* eslint-enable no-console */
+    }
   }
 };
 </script>
