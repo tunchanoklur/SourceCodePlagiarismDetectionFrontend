@@ -37,6 +37,13 @@
                     indeterminate
                   ></v-progress-circular>
                 </div>
+                <div v-if="!loading && similarity_score.length>0" class="text-center">
+                  <DataTable
+                    :headers="datatable_headers"
+                    :fields="datatable_field"
+                    :datas="formattedSimScore"
+                  ></DataTable>
+                </div>
               <br>
               </v-card>
             </v-col>
@@ -49,11 +56,12 @@
 
 <script>
 import MultifileInput from "@/components/MultifileInput"
+import DataTable from "@/components/DataTable"
 import axios from "axios"
 export default {
   name: 'Home',
   components: {
-    MultifileInput
+    MultifileInput,DataTable
   },
   data:function(){
     return{
@@ -63,12 +71,34 @@ export default {
       similar_loc:[],
       filename_list:[],
       fileinfo_list:[],
-      loading:false
+      loading:false,
+      datatable_headers: ["Reference file", "Comparison file", "Similarity score"],
+      datatable_field: ["ref_filename","comp_filename","sim_score"]
     }
   },
   watch:{
     filelist: function(){
       this.filelist_processed = this.processFile(this.filelist)
+    }
+  },
+  computed:{
+    formattedSimScore: function(){
+      let dup = [...this.similarity_score]
+      let formatted = []
+      dup.forEach((row,i)=>{
+        row.forEach((data,j)=>{
+          if(i!==j && data!==1000){
+            formatted.push({
+              ref_index: i,
+              comp_index: j,
+              ref_filename: this.filename_list[i],
+              comp_filename: this.filename_list[j],
+              sim_score: data
+            })
+          }
+        })
+      })
+      return formatted
     }
   },
   methods:{
@@ -98,8 +128,6 @@ export default {
       this.loading = true
       await axios.post('/getsimscore',{filelist:this.filelist_processed})
       .then((result) => {
-        // eslint-disable-next-line
-        console.log(result.data.score)
         this.similarity_score = result.data["score"]
         this.similar_loc = result.data["loc"]
         this.filename_list = result.data["filelist_name"]
