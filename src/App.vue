@@ -8,7 +8,8 @@
         </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text @click="$router.push('/about')">About</v-btn>
+      <v-btn v-if="$route.path!=='/'" text @click="$router.push('/')">Home</v-btn>
+      <v-btn v-if="$route.path!=='/about'" text @click="$router.push('/about')">About</v-btn>
     </v-app-bar>
 
     <v-content>

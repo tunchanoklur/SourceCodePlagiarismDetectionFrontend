@@ -10,13 +10,36 @@
         <v-layout row wrap align-center>
           <v-flex xs12 md12 lg12>
             <br>
-            <MultifileInput filetype=".c" label="Select source code files" :value="filelist" v-model="filelist"/>
+              <v-col>
+                <v-card
+                  class="mx-auto"
+                  outlined
+                >
+                  <div class="text-center">
+                    <MultifileInput filetype=".c" label="Select source code files" :value="filelist" v-model="filelist"/>
+                    <v-btn rounded color="rgba(0,0,0,.87)" dark @click="submit()">Submit</v-btn>
+                  </div>
+                  <br>
+                </v-card>
+              </v-col>
             <br>
-            <div class="text-center">
-              <v-btn rounded color="rgba(0,0,0,.87)" dark @click="submit()">Submit</v-btn>
-            </div>
-            <div>{{result}}</div>
-            <div>{{error}}</div>
+            <v-col>
+              <v-card
+                class="mx-auto"
+                outlined
+              >
+              <br>
+                <div v-if="loading" class="text-center">
+                  <v-progress-circular
+                    :size="70"
+                    :width="7"
+                    color="black"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+              <br>
+              </v-card>
+            </v-col>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -36,8 +59,11 @@ export default {
     return{
       filelist:[],
       filelist_processed:[],
-      result:null,
-      error:null
+      similarity_score:[],
+      similar_loc:[],
+      filename_list:[],
+      fileinfo_list:[],
+      loading:false
     }
   },
   watch:{
@@ -69,12 +95,22 @@ export default {
       return result
     },
     async submit(){
+      this.loading = true
       await axios.post('/getsimscore',{filelist:this.filelist_processed})
       .then((result) => {
-        this.result = result
+        // eslint-disable-next-line
+        console.log(result.data.score)
+        this.similarity_score = result.data["score"]
+        this.similar_loc = result.data["loc"]
+        this.filename_list = result.data["filelist_name"]
+        this.fileinfo_list = result.data["filelist_data"]
+        this.loading = false
+        // eslint-disable-next-line
+        console.log("DONE")
       })
       .catch((err) => {
-        this.error = err
+        this.loading = false
+        alert(err)
       })
     }
   },
