@@ -11,6 +11,12 @@
           <v-flex xs12 md12 lg12>
             <br>
             <MultifileInput filetype=".c" label="Select source code files" :value="filelist" v-model="filelist"/>
+            <br>
+            <div class="text-center">
+              <v-btn rounded color="rgba(0,0,0,.87)" dark @click="submit()">Submit</v-btn>
+            </div>
+            <div>{{result}}</div>
+            <div>{{error}}</div>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -20,6 +26,7 @@
 
 <script>
 import MultifileInput from "@/components/MultifileInput"
+import axios from "axios"
 export default {
   name: 'Home',
   components: {
@@ -28,7 +35,9 @@ export default {
   data:function(){
     return{
       filelist:[],
-      filelist_processed:[]
+      filelist_processed:[],
+      result:null,
+      error:null
     }
   },
   watch:{
@@ -47,11 +56,8 @@ export default {
             result.push({
               id: key,
               filename: file.name,
-              fileinfo: e.target.result
+              fileinfo: e.target.result.replace(/\\n/gim,`\\\\n`)
             });
-            /* eslint-disable no-console */
-            //console.log("INFO", typeof(e.target.result));
-            /* eslint-enable no-console */
           };
         });
 
@@ -62,6 +68,15 @@ export default {
       });
       return result
     },
-  }
+    async submit(){
+      await axios.post('/getsimscore',{filelist:this.filelist_processed})
+      .then((result) => {
+        this.result = result
+      })
+      .catch((err) => {
+        this.error = err
+      })
+    }
+  },
 };
 </script>
