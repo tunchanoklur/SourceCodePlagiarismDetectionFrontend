@@ -24,7 +24,11 @@
               </v-col>
             <br>
             <v-col>
-              <v-card
+              <ErrorAlert v-if="error"
+                :title="error_title"
+                :message="error_msg"
+              />
+              <v-card v-else
                 class="mx-auto"
                 outlined
               >
@@ -75,11 +79,12 @@
 import MultifileInput from "@/components/MultifileInput"
 import DataTable from "@/components/DataTable"
 import SourceCodeDialog from "@/components/SourceCodeDialog"
+import ErrorAlert from "@/components/ErrorAlert"
 import axios from "axios"
 export default {
   name: 'Home',
   components: {
-    MultifileInput,DataTable,SourceCodeDialog
+    MultifileInput,DataTable,SourceCodeDialog,ErrorAlert
   },
   data:function(){
     return{
@@ -119,6 +124,9 @@ export default {
         sim_score: 0,
       },
       dialog_title: "",
+      error: false,
+      error_title:"",
+      error_msg:""
     }
   },
   watch:{
@@ -173,10 +181,19 @@ export default {
       this.loading = true
       await axios.post('/getsimscore',{filelist:this.filelist_processed})
       .then((result) => {
-        this.similarity_score = result.data["score"]
-        this.similar_loc = result.data["loc"]
-        this.filename_list = result.data["filelist_name"]
-        this.fileinfo_list = result.data["filelist_data"]
+        if(result.data.error){
+          this.error = true
+          this.error_title = result.data.error
+          this.error_msg = result.data.error_msg
+          // eslint-disable-next-line
+          console.log("ERROR",result.data.error)
+        }else{
+          this.error = false
+          this.similarity_score = result.data["score"]
+          this.similar_loc = result.data["loc"]
+          this.filename_list = result.data["filelist_name"]
+          this.fileinfo_list = result.data["filelist_data"]
+        }
         this.loading = false
         // eslint-disable-next-line
         console.log("DONE")
