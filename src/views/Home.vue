@@ -25,6 +25,7 @@
             <br>
             <v-col>
               <ErrorAlert v-if="error"
+                :show="error"
                 :title="error_title"
                 :message="error_msg"
               />
@@ -185,8 +186,6 @@ export default {
           this.error = true
           this.error_title = result.data.error
           this.error_msg = result.data.error_msg
-          // eslint-disable-next-line
-          console.log("ERROR",result.data.error)
         }else{
           this.error = false
           this.similarity_score = result.data["score"]
