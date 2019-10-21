@@ -6,12 +6,12 @@
           <v-toolbar-title>{{title}}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn icon dark @click="$emit('close_dialog')">
+            <v-btn icon dark @click="$emit('close_dialog');scrollTop();">
                 <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card-text>
+        <v-card-text id="dialog_content">
           <v-row>
             <v-col xs="12" md="6" lg="6">
               <SourceCodeSheet
@@ -40,6 +40,11 @@ import SourceCodeSheet from '@/components/SourceCodeSheet'
     components: {
       SourceCodeSheet
     },
-    props:['title','dialog','refer','comp']
+    props:['title','dialog','refer','comp'],
+    methods:{
+      scrollTop(){
+        document.getElementById("dialog_content").scrollTop = 0;
+      }
+    }
   }
 </script>

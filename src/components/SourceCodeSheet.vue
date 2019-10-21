@@ -1,9 +1,14 @@
 <template>
   <v-card class="mx-auto" tile>
     <v-list disabled>
-      <v-subheader>{{ title }}</v-subheader>
+      <v-list-item>
+        <v-list-item-content>
+            <v-list-item-title style="font-size: x-large;"><b>{{ title }}</b></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <hr>
       <v-list-item-group color="primary">
-        <v-list-item
+        <v-list-item dense
           v-for="(data, i) in datas"
           :key="i"
           :style="

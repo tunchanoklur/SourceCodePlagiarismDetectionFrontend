@@ -40,7 +40,6 @@
                 <div v-if="!loading && similarity_score.length>0" class="text-center">
                   <DataTable
                     :headers="datatable_headers"
-                    :fields="datatable_field"
                     :datas="formattedSimScore"
                     @row_clicked="handleTableClick"
                   ></DataTable>
@@ -91,8 +90,26 @@ export default {
       filename_list: [],
       fileinfo_list: [],
       loading: false,
-      datatable_headers: ["Reference file", "Comparison file", "Similarity score"],
-      datatable_field: ["ref_filename","comp_filename","sim_score"],
+      datatable_headers: [
+         {
+            text: "Reference File",
+            align: 'left',
+            sortable: true,
+            value: 'ref_filename',
+          },
+          {
+            text: "Compared File",
+            align: 'left',
+            sortable: true,
+            value: 'comp_filename',
+          },
+          {
+            text: "Similarity Score",
+            align: 'left',
+            sortable: true,
+            value: 'sim_score',
+          }
+      ],
       dialog: false,
       dialog_data: {
         comp_filename: "",
