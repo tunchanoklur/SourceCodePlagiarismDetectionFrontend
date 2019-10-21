@@ -42,7 +42,25 @@
                     :headers="datatable_headers"
                     :fields="datatable_field"
                     :datas="formattedSimScore"
+                    @row_clicked="handleTableClick"
                   ></DataTable>
+                  <SourceCodeDialog
+                    :title="dialog_title"
+                    :dialog="dialog"
+                    @close_dialog="handleCloseDialog"
+                    :refer="{
+                      filename: dialog_data.ref_filename,
+                      fileinfo: fileinfo_list[dialog_data.ref_index].split('\n'),
+                      locs: formatLOC(dialog_data.ref_index,dialog_data.comp_index,0)
+                    }"
+                    :comp="{
+                      filename: dialog_data.comp_filename,
+                      fileinfo: fileinfo_list[dialog_data.comp_index].split(
+                        '\n'
+                      ),
+                      locs: formatLOC(dialog_data.ref_index,dialog_data.comp_index,1)
+                    }"
+                  />
                 </div>
               <br>
               </v-card>
@@ -57,23 +75,33 @@
 <script>
 import MultifileInput from "@/components/MultifileInput"
 import DataTable from "@/components/DataTable"
+import SourceCodeDialog from "@/components/SourceCodeDialog"
 import axios from "axios"
 export default {
   name: 'Home',
   components: {
-    MultifileInput,DataTable
+    MultifileInput,DataTable,SourceCodeDialog
   },
   data:function(){
     return{
-      filelist:[],
-      filelist_processed:[],
-      similarity_score:[],
-      similar_loc:[],
-      filename_list:[],
-      fileinfo_list:[],
-      loading:false,
+      filelist: [],
+      filelist_processed: [],
+      similarity_score: [],
+      similar_loc: [],
+      filename_list: [],
+      fileinfo_list: [],
+      loading: false,
       datatable_headers: ["Reference file", "Comparison file", "Similarity score"],
-      datatable_field: ["ref_filename","comp_filename","sim_score"]
+      datatable_field: ["ref_filename","comp_filename","sim_score"],
+      dialog: false,
+      dialog_data: {
+        comp_filename: "",
+        comp_index: 0,
+        ref_filename: "",
+        ref_index: 0,
+        sim_score: 0,
+      },
+      dialog_title: "",
     }
   },
   watch:{
@@ -140,6 +168,27 @@ export default {
         this.loading = false
         alert(err)
       })
+    },
+    handleTableClick(data){
+      this.dialog_title = data.ref_filename+"\t-\t"+data.comp_filename
+      this.dialog_data = data
+      this.dialog = true
+    },
+    handleCloseDialog(){
+      this.dialog = false
+    },
+    formatLOC(index_i,index_j,pos){
+      let loc = [...this.similar_loc[index_i][index_j]]
+      let formatted = [[],[]]
+      loc.forEach((data)=>{
+        data[0].forEach((index)=>{
+          formatted[0].push(index)
+        })
+        data[1].forEach((index)=>{
+          formatted[1].push(index)
+        })
+      })
+      return formatted[pos]
     }
   },
 };

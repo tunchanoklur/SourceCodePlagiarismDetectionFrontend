@@ -7,7 +7,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(data,i) in datas" :key="i">
+        <tr v-for="(data,i) in datas" :key="i" @click="$emit('row_clicked',data)">
           <td class="text-left" v-for="(field,j) in fields" :key="j">{{ data[field] }}</td>
         </tr>
       </tbody>
