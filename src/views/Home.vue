@@ -43,6 +43,10 @@
                   ></v-progress-circular>
                 </div>
                 <div v-if="!loading && similarity_score.length>0" class="text-center">
+                  <div class="text-right">
+                    <v-btn rounded color="rgba(0,0,0,.87)" style="margin-right:10px;" dark @click="exportCSV()">Export CSV</v-btn>
+                  </div>
+                  <br>
                   <DataTable
                     :headers="datatable_headers"
                     :datas="formattedSimScore"
@@ -91,6 +95,7 @@ export default {
     return{
       filelist: [],
       filelist_processed: [],
+      filelist_processed_showing: [],
       similarity_score: [],
       similar_loc: [],
       filename_list: [],
@@ -192,6 +197,7 @@ export default {
           this.similar_loc = result.data["loc"]
           this.filename_list = result.data["filelist_name"]
           this.fileinfo_list = result.data["filelist_data"]
+          this.filelist_processed_showing = [...this.filelist_processed]
         }
         this.loading = false
         // eslint-disable-next-line
@@ -199,6 +205,22 @@ export default {
       })
       .catch((err) => {
         this.loading = false
+        alert(err)
+      })
+    },
+    async exportCSV(){
+      // eslint-disable-next-line
+      console.log("Export")
+      await axios.post('/getsimscore_csv',{filelist:this.filelist_processed_showing},{responseType: 'blob'})
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'similarityscore.csv');
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch((err) => {
         alert(err)
       })
     },
