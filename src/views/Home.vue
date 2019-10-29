@@ -264,17 +264,19 @@ export default {
       this.dialog = false;
     },
     formatLOC(index_i, index_j, pos) {
-      let loc = [...this.similar_loc[index_i][index_j]];
-      let formatted = [[], []];
-      loc.forEach(data => {
-        data[0].forEach(index => {
-          formatted[0].push(index);
+      if(index_i!==index_j){
+        let loc = [...this.similar_loc[index_i][index_j]];
+        let formatted = [[], []];
+        loc.forEach(data => {
+          data[0].forEach(index => {
+            formatted[0].push(index);
+          });
+          data[1].forEach(index => {
+            formatted[1].push(index);
+          });
         });
-        data[1].forEach(index => {
-          formatted[1].push(index);
-        });
-      });
-      return formatted[pos];
+        return formatted[pos];
+      }
     }
   }
 };
