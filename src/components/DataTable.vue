@@ -9,6 +9,7 @@
       :headers="headers"
       :items="datas"
       :search="search"
+      :items-per-page=15
       height="400px"
     >
       <template v-slot:body="{ items }">
