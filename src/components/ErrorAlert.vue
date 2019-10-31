@@ -11,14 +11,30 @@
       <v-divider
         style="opacity: 0.22"
       ></v-divider>
-      <div>{{message}}</div>
+      <div v-if="message.error_type" >
+        <div>Type : {{message.error_type}}</div>
+        <div>File : {{message.file}}</div>
+        <div>Line : {{message.line}}</div>
+        <div>Message : {{message.msg}}</div>
+        <SourceCodeSheet
+          :datas="message.fileinfo.split(
+            '\n'
+          )"
+          :locs="[message.line]"
+        />
+      </div>
+      <div v-else>
+        {{message}}
+      </div>
     </v-alert>
   </div>
 </template>
 
 <script>
+import SourceCodeSheet from '@/components/SourceCodeSheet'
   export default {
     props:['show','title','message'],
+    components:{SourceCodeSheet},
     data() {
       return {
         show_control: false

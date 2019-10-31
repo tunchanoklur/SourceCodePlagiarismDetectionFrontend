@@ -217,6 +217,7 @@ export default {
             this.error = true;
             this.error_title = result.data.error;
             this.error_msg = result.data.error_msg;
+            this.filelist = [];
           } else {
             this.error = false;
             this.similarity_score = result.data["score"];
@@ -224,6 +225,7 @@ export default {
             this.filename_list = result.data["filelist_name"];
             this.fileinfo_list = result.data["filelist_data"];
             this.filelist_processed_showing = [...this.filelist_processed];
+            this.filelist = []
           }
           this.loading = false;
           // eslint-disable-next-line

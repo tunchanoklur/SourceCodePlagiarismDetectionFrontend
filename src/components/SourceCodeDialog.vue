@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" :scrollable="false">
       <v-card>
         <v-toolbar dark color="black">
           <v-toolbar-title>{{title}}</v-toolbar-title>
