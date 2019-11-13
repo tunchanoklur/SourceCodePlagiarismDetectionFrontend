@@ -7,7 +7,18 @@
         </v-list-item-content>
       </v-list-item>
       <hr v-if="title">
-      <v-list-item-group color="primary">
+      <v-container
+        id="target"
+        style="max-height: 700px;position: relative;"
+        class="overflow-y-auto"
+        
+        v-scroll="{arg: target, value: onScroll}"
+      >
+      <v-list-item-group
+        color="primary"
+        v-scroll="onScroll2"
+        style="height: 1000px;"
+      >
         <v-list-item dense
           v-for="(data, i) in datas"
           :key="i"
@@ -27,12 +38,30 @@
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
+      </v-container>
     </v-list>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ["title", "datas", "locs"]
+  props: ["title", "datas", "locs"],
+  data: () => ({
+    target: "#target",
+  }),
+  methods: {
+    onScroll (e) {
+      // eslint-disable-next-line
+      console.log("1", e)
+    },
+    onScroll2 (e) {
+      // eslint-disable-next-line
+      console.log("2",e)
+    },
+    target_(){
+      return this.target
+    }
+    
+  },
 };
 </script>
